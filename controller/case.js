@@ -10,8 +10,8 @@ let CaseSchema = new Schema({
     createdAt : Number
 })
 
-// module.exports = mongoose.model('Case', CaseSchema)
-
+exports.CaseSchema = CaseSchema
+// module.exports = CaseSchema
 
 let project = 'streamline'
 let Case = mongoose.model('Case'+'_'+project, CaseSchema)
