@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 let url = require('url')
 let path = require('path')
-let caseManager = require('../controller/case_manager');
+let caseController = require('../controller/case_controller');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -18,13 +18,14 @@ router.get('/uploads/*', (req, res)=>{
 })
 
 router.get('/upload', (req, res)=>{
-  res.render('upload', {versions:['browser','feed','account','setting']})
-  res.download()
+  caseController.findProjectWithModules(req, (projects)=>{
+    res.render('upload', {projects:projects})
+  })
 });
 
 router.post('/upload', (req, res)=>{
   res.writeHead(200, {'Content-Type' : 'text/plain; charset=utf-8'})
-  caseManager.saveCase(req, (err)=>{
+  caseController.saveCase(req, (err)=>{
     if (err){
       res.end(err)
     }else{

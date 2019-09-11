@@ -9,7 +9,13 @@ let caseManager = require('./case')
 let projectManager = require('./project')
 
 function findProjects(req, callback) {
-    projectManager.finojects((projects)=>{
+    projectManager.findProjects((projects)=>{
+        callback(projects)
+    })
+}
+
+function findProjectWithModules(req, callback) {
+    projectManager.findProjectWithModules((projects)=>{
         callback(projects)
     })
 }
@@ -31,10 +37,14 @@ function saveCase(req, callback) {
             callback("解析请求失败")
             return;
         }
-        let folderName = 'default'
-        console.log(fields.folderName)
-        if (fields.folderName){
-            folderName = fields.folderName
+        let project = 'default'
+        let module = 'default'
+        console.log(fields.project)
+        if (fields.project){
+            project = fields.project
+        }
+        if (fields.module){
+            module = fields.module
         }
 
         file_list.forEach((value, index, array)=>{
@@ -43,7 +53,7 @@ function saveCase(req, callback) {
             let file_name = file.name
             let ttt = sd.format(new Date(), 'YYYYMMDDHHmmss')
             let old_path = file.path
-            let new_path = path.normalize(__dirname  + '/../uploads/' + folderName)
+            let new_path = path.normalize(__dirname  + '/../uploads/' + project+'/'+module)
 
             console.log(new_path)
             let new_file = new_path + '/' + file_name
@@ -68,15 +78,10 @@ function renameFile(from, to, callback) {
             callback('文件改名失败')
         }else{
             console.log('receive&rename success')
-            /*caseManager.findCase((list)=>{
-                callback(list)
-            })*/
-            projectManager.findProjectWithModules((list)=>{
-                callback(list)
-            })
-            // callback('上传成功')
+            callback('上传成功')
         }
     })
 }
 exports.saveCase = saveCase
 exports.findProjects = findProjects
+exports.findProjectWithModules = findProjectWithModules

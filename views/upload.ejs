@@ -37,15 +37,19 @@
 
 <div class="container">
     <div class="row">
-        <form style="width: 40%" method="post" enctype="multipart/form-data" action="#">
+        <form style="width: 40%" method="post" enctype="multipart/form-data" action="#" name="case_upload">
             <div class="form-group">
-                <label for="choice">选择版本</label>
-                <select class="form-control" name="folderName">
-                    <%for(var i=0; i<versions.length; i++){%>
-                        <option><%= versions[i]%></option>
-                    <% } %>>
+                <label for="choice">选择应用</label>
+                <select class="form-control" name="project" onchange="getModules()">
                 </select>
             </div>
+
+            <div class="form-group">
+                <label for="choice">选择业务模块</label>
+                <select class="form-control" name="module">
+                </select>
+            </div>
+
             <div class="form-group">
                 <label for="fileinput">选择case文件</label>
                 <input type="file" id="fileinput" name="uploads" multiple="multiple">
@@ -59,5 +63,31 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script language="JavaScript" type="text/javascript">
+    var json = '<%- projects %>'
+    var projectObjs = JSON.parse(json)
+    function getProjects() {
+        var sltProject = document.case_upload.project;
+        for (var i=0; i<projectObjs.length; i++){
+            sltProject[i] = new Option(projectObjs[i].name, projectObjs[i].name)
+        }
+    }
+
+    function getModules() {
+        var sltProject = document.case_upload.project;
+        var sltModule = document.case_upload.module;
+        var currentProject = sltProject.selectedIndex
+
+        sltModule.length = 0
+
+        var modules = projectObjs[currentProject].modules
+        for (var i=0; i<modules.length; i++){
+            sltModule[i] = new Option(modules[i].name, modules[i].name)
+        }
+    }
+
+    getProjects();
+    getModules();
+</script>
 </body>
 </html>
