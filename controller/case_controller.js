@@ -5,6 +5,7 @@ let fs = require('fs')
 let path = require('path')
 let sd = require('silly-datetime')
 let formidable = require('formidable')
+let url = require('url')
 let caseManager = require('./case')
 let projectManager = require('./project')
 let mongoose = require('./db')
@@ -20,6 +21,14 @@ function findProjects(req, callback) {
 function findProjectWithModules(req, callback) {
     projectManager.findProjectWithModules((projects)=>{
         callback(projects)
+    })
+}
+
+function findCase(req, callback) {
+    let query = url.parse(req.url, true).query
+    console.log('query:'+ query['project'])
+    caseManager.findCase(query['project'], (caselist)=>{
+        callback(caselist)
     })
 }
 
@@ -106,5 +115,6 @@ function renameFile(from, to, callback) {
     })
 }
 exports.saveCase = saveCase
+exports.findCase = findCase
 exports.findProjects = findProjects
 exports.findProjectWithModules = findProjectWithModules

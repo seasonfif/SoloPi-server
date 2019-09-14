@@ -31,11 +31,16 @@ let test_case = new Case({
     console.error(err)
 })*/
 
-function findCase(callback){
+function getCaseSchemaByProject(project) {
+    return mongoose.model('Case'+'_'+project, CaseSchema)
+}
+
+function findCase(project, callback){
     let whereStr = {project: project}
+    Case = getCaseSchemaByProject(project)
     Case.find(whereStr).then((resolve)=>{
         console.log("resolve: "+resolve.length)
-        callback(JSON.stringify(resolve))
+        callback(resolve)
     }).catch((err)=>{
         console.error(err)
     })

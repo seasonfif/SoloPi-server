@@ -17,6 +17,13 @@ router.get('/uploads/*', (req, res)=>{
   res.download(file_path)
 })
 
+router.get('/download', (req, res)=>{
+  let query = url.parse(req.url, true).query
+  let file_path = path.normalize(__dirname + '/../uploads/' + query['rname']);
+  console.log(file_path)
+  res.download(file_path)
+})
+
 router.get('/upload', (req, res)=>{
   caseController.findProjectWithModules(req, (projects)=>{
     res.render('upload', {projects:projects})
@@ -32,6 +39,13 @@ router.post('/upload', (req, res)=>{
       res.write(err)
       res.end()
     }
+  })
+})
+
+router.get('/case_list', (req, res)=>{
+  // res.writeHead(200, {'Content-Type' : 'application/json; charset=utf-8'})
+  caseController.findCase(req, (result)=>{
+    res.json(result);
   })
 })
 
