@@ -7,6 +7,7 @@ let CaseSchema = new Schema({
     project: String,
     package: String,
     description : String,
+    rname: String,
     createdAt : Number
 })
 

@@ -8,6 +8,7 @@ let formidable = require('formidable')
 let caseManager = require('./case')
 let projectManager = require('./project')
 let mongoose = require('./db')
+let utils = require('./utils')
 const {CaseSchema} = require("./case");
 
 function findProjects(req, callback) {
@@ -50,12 +51,14 @@ function saveCase(req, callback) {
                 module: item.module,
                 project: item.project,
                 package: item.pkg,
+                rname: utils.md5(item.name+item.module+item.project),
                 description: 'a test case',
                 createdAt: new Date().getTime()
             })
             caseSchemaMap.set(test_case.name, test_case)
-            test_case.save().then((result)=>{
-                console.log('result: '+result)
+
+            Case.updateOne({rname: test_case.rname}, item, {upsert: true}).then((result)=>{
+                console.log('result: '+JSON.stringify(result))
             }).catch((err)=>{
                 console.error(err)
             })
@@ -65,22 +68,18 @@ function saveCase(req, callback) {
             // console.log(util.inspect({value: value, index: index}))
             let file = value[1]
             let file_name = file.name
-            let project = 'default'
-            let module = 'default'
+            let rname = 'default'
             let caseSchema = caseSchemaMap.get(file_name)
-            if (caseSchema.project){
-                project = caseSchema.project
-            }
-            if (caseSchema.module){
-                module = caseSchema.module
+            if (caseSchema.rname){
+                rname = caseSchema.rname
             }
 
             let ttt = sd.format(new Date(), 'YYYYMMDDHHmmss')
             let old_path = file.path
-            let new_path = path.normalize(__dirname  + '/../uploads/' + project+'/'+module)
+            let new_path = path.normalize(__dirname  + '/../uploads')
 
-            console.log(new_path)
-            let new_file = new_path + '/' + file_name
+            let new_file = new_path + '/' + rname
+            console.log(new_file)
             fs.stat(new_path, (err, stats)=>{
                 if (err){
                     fs.mkdir(new_path, {recursive: true}, ()=>{

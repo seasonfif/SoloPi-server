@@ -8,28 +8,7 @@ let ProjectSchema = new Schema({
 })
 
 let Project = mongoose.model('project', ProjectSchema)
-
-let project_list = []
-project_list.push(new Project({
-    name: "sogou browser",
-    package: 'sogou.mobile.explore',
-    createdAt: new Date().getTime()
-}))
-
-project_list.push(new Project({
-    name: "streamline",
-    package: 'sogou.mobile.explore.streamline',
-    createdAt: new Date().getTime()
-}))
-
-/**
- * 生成默认project数据
- */
-/*Project.insertMany(project_list).then((result)=>{
-    console.log('result: '+result)
-}).catch((err)=>{
-    console.error(err)
-})*/
+module.exports = Project
 
 function findProjects(callback){
     Project.find().then((resolve)=>{
